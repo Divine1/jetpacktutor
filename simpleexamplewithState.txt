@@ -1,0 +1,171 @@
+MainActivity.kt
+
+```
+package com.myf.busi
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.myf.busi.ui.theme.MyApplicationTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MyApplicationTheme {
+                // A surface container using the 'background' color from the theme
+                //Surface(color = MaterialTheme.colors.background) {
+                Surface(color = Color.Green) {
+                    Greeting("Android")
+                    Dgreet()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Dgreet(){
+    var counterState = remember{mutableStateOf(0)}
+    var list = listOf<String>("Lion","Tiger","Giraffe")
+    Column() {
+        for (item in list) {
+            Text(item, modifier = Modifier.padding(20.dp))
+            Divider(color = Color.Black)
+        }
+        Counter(counterState.value){
+            counterState.value = it;
+        }
+    }
+}
+
+@Composable
+fun Counter(count : Int, updateCount : (Int) -> Unit){
+    Button(
+        onClick={
+            updateCount(count+1)
+        }
+    ){
+        Text(text = "Clicked $count times")
+    }
+
+}
+
+@Composable
+fun Greeting(name: String) {
+    Text(text = "Hello divine $name!")
+}
+
+//@Preview(showBackground = false)
+@Composable
+fun DefaultPreview() {
+    MyApplicationTheme {
+        Greeting("Android demo")
+    }
+}
+```
+
+build.gradle
+
+```
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext {
+        compose_version = '1.0.0-rc01'
+    }
+    ext.kotlin_version = "1.5.10"
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.0.0-beta05"
+        //classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+```
+
+app/build.gradle
+```
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.myf.busi"
+        minSdk 25
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        //kotlinCompilerVersion '1.4.32'
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-compose:1.3.0-rc01'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+}
+```
+
+
